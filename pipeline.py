@@ -108,9 +108,10 @@ invalid_transactions = daily_data[
     daily_data["error_reason"] != ""
 ].copy()
 
+valid_transactions = valid_transactions.drop(columns=["error_reason"])
 
 
-# 3. Load
+# 4. Load
 valid_transactions.to_csv(
     "output/valid_transactions.csv",
     index=False
@@ -122,9 +123,8 @@ invalid_transactions.to_csv(
 )
 
 
-# -----------------------------
+
 # 5. Summary
-# -----------------------------
 
 summary = pd.DataFrame({
     "metric": [
