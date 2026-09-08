@@ -6,13 +6,6 @@ import pandas as pd
 # 1. Extract
 files = glob.glob("input/*.csv")
 
-dataframes = [pd.read_csv(file) for file in files]
-
-daily_data = pd.concat(dataframes, ignore_index=True)
-
-
-
-# 2. Validate
 required_columns = {
     "transaction_id",
     "account_id",
@@ -22,10 +15,21 @@ required_columns = {
     "currency"
 }
 
-missing_columns = required_columns - set(daily_data.columns)
+dataframes = []
 
-if missing_columns:
-    raise ValueError(f"Missing required columns: {missing_columns}")
+for file in files:
+    df = pd.read_csv(file)
+
+    missing_columns = required_columns - set(df.columns)
+
+    if missing_columns:
+        raise ValueError(
+            f"{file} is missing required columns: {missing_columns}"
+        )
+
+    dataframes.append(df)
+
+daily_data = pd.concat(dataframes, ignore_index=True)
 
 
 # Create an error column for every record
