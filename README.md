@@ -16,6 +16,7 @@ The pipeline reads all branch files, validates the transactions, separates valid
 ```text
 week2_branch_pipeline/
 ├── input/                  # Branch transaction CSV files
+├── test/                   # Test CSV files for pipeline testing
 ├── output/                 # Generated output files
 ├── pipeline.py             # Main pipeline
 ├── requirements.txt        # Python dependencies
@@ -64,6 +65,70 @@ From the project root directory:
 ```bash
 python pipeline.py
 ```
+
+## Testing
+
+The pipeline includes test CSV files in the `test/` folder for checking different scenarios.
+
+### Run a test individually
+
+You can run a specific test without moving the test file into the `input/` folder.
+
+Use:
+
+```bash
+python pipeline.py <TEST_ID>
+```
+
+For example:
+
+```bash
+python pipeline.py T01
+python pipeline.py T02
+python pipeline.py T03
+```
+
+The pipeline will automatically find the corresponding test file in the `test/` folder.
+
+For example:
+
+```text
+python pipeline.py T04
+```
+
+will process files beginning with `T04` in the `test/` folder.
+
+### Test together with other input files
+
+You can also copy or drag a test CSV file from the `test/` folder into the `input/` folder.
+
+Then run the normal pipeline:
+
+```bash
+python pipeline.py
+```
+
+In this mode, the pipeline processes all CSV files currently present in the `input/` folder. This allows you to test a scenario together with the normal branch transaction files.
+
+For example, if you place `T02_HEADER_ONLY.csv` in the `input/` folder alongside the original branch files:
+
+```text
+input/
+├── BR001_20260906_TRANSACTION.csv
+├── BR002_20260906_TRANSACTION.csv
+├── BR003_20260906_TRANSACTION.csv
+└── T02_HEADER_ONLY.csv
+```
+
+run:
+
+```bash
+python pipeline.py
+```
+
+The pipeline will process all four files and report the header-only file with a warning.
+
+After testing, move the test file back to the `test/` folder to keep the project organized.
 
 ## Output
 
