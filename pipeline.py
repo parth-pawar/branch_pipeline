@@ -1,10 +1,14 @@
 import glob
 import pandas as pd
-
+import sys
 
 
 # 1. Extract
-files = glob.glob("input/*.csv")
+if len(sys.argv) > 1:
+    test_id = sys.argv[1]
+    files = glob.glob(f"test/{test_id}*.csv")
+else:
+    files = glob.glob("input/*.csv")
 
 required_columns = {
     "transaction_id",
@@ -23,14 +27,22 @@ for file in files:
     missing_columns = required_columns - set(df.columns)
 
     if missing_columns:
-        raise ValueError(
-            f"{file} is missing required columns: {missing_columns}"
+        print(
+            f"Warning: {file} is missing required columns: "
+            f"{missing_columns}. Skipping this file."
         )
+        continue
+
+    if df.empty:
+        print(f"Warning: {file} contains no transactions.")
 
     dataframes.append(df)
 
-daily_data = pd.concat(dataframes, ignore_index=True)
-
+if not dataframes:
+    print("Warning: No valid input files to process.")
+    daily_data = pd.DataFrame(columns=list(required_columns))
+else:
+    daily_data = pd.concat(dataframes, ignore_index=True)
 
 # Create an error column for every record
 daily_data["error_reason"] = ""
